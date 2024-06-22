@@ -1,0 +1,133 @@
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.detekt)
+}
+
+android {
+    namespace 'cl.itau.challenge'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "cl.itau.challenge"
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "cl.itau.challenge.ChallengeAppTestRunner"
+        buildConfigField "String", "API_BASE_URL", "\"https://earthquake.usgs.gov/\""
+    }
+
+    signingConfigs {
+        debug {
+            storeFile rootProject.file('debug.keystore')
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storePassword 'android'
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+            testCoverageEnabled true
+        }
+        release {
+            signingConfig signingConfigs.debug
+
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    buildFeatures {
+        viewBinding true
+        buildConfig true
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin/'
+        main.java.srcDirs += 'build/generated/source/protos/main/java'
+        test.java.srcDirs += 'src/test/kotlin/'
+    }
+
+    detekt {
+        toolVersion = "1.23.3"
+
+        config.setFrom("$rootDir/tools/detekt/detekt.yml")
+        ignoredBuildTypes = ["release"]
+        basePath = rootDir
+    }
+}
+
+dependencies {
+
+    // Android Framework
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.appcompat
+    implementation libs.material
+    implementation libs.androidx.constraintlayout
+    implementation libs.androidx.navigation.fragment.ktx
+    implementation libs.androidx.navigation.ui.ktx
+    implementation libs.androidx.recycler.view
+    implementation libs.androidx.swipe.refresh.layout
+    implementation libs.lifecycle.runtime
+    implementation libs.lifecycle.saved.state
+    implementation libs.lifecycle.viewmodel
+    implementation libs.preference.manager
+    ksp libs.lifecycle.compiler
+
+    // GSON
+    implementation libs.gson
+
+    // Retrofit
+    implementation libs.retrofit
+    implementation libs.converter.gson
+
+    // Bundles and BoM
+    implementation platform(libs.koin.bom)
+    implementation libs.bundles.koin
+    implementation platform(libs.okhttp.bom)
+    implementation libs.bundles.okhttp
+
+    // Room
+    implementation libs.bundles.room
+    ksp(libs.room.compiler)
+
+    // Coroutines
+    implementation libs.coroutines.core
+    implementation libs.coroutines.core.jvm
+    implementation libs.coroutines.android
+    implementation libs.coroutines.test
+    implementation libs.coroutines.test.jvm
+
+    // OSM
+    implementation libs.open.street.map
+
+    // Testing
+    testImplementation libs.junit
+    testImplementation libs.bundles.mockk
+    testImplementation libs.turbine
+    testImplementation libs.lifecycle.test
+    androidTestImplementation libs.androidx.junit
+    androidTestImplementation libs.test.rules
+    androidTestImplementation libs.test.runner
+    androidTestImplementation libs.androidx.espresso.core
+    androidTestImplementation libs.androidx.espresso.contrib
+    debugImplementation libs.fragment.test
+
+    coreLibraryDesugaring libs.jdk.desugaring
+}

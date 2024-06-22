@@ -1,0 +1,30 @@
+package cl.itau.challenge.domain.model
+
+data class EarthquakeProperty(
+    val mag: Double,
+    val place: String,
+    val time: Long,
+    val updated: Long,
+    val tz: Any?,
+    val url: String,
+    val detail: String,
+    val felt: Long?,
+    val cdi: Double?,
+    val mmi: Double?,
+    val alert: String?,
+    val status: String,
+    val tsunami: Long,
+    val sig: Long,
+    val net: String,
+    val code: String,
+    val ids: String,
+    val sources: String,
+    val types: String,
+    val nst: Long?,
+    val dmin: Double?,
+    val rms: Double,
+    val gap: Double?,
+    val magType: String,
+    val type: String,
+    val title: String
+)
